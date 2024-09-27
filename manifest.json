@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Zillow Address Scraper",
+  "version": "1.0",
+  "description": "Scrape address data from Zillow search results pages",
+  "permissions": ["activeTab", "scripting", "storage", "tabs", "downloads"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.zillow.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
