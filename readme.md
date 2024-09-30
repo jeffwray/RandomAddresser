@@ -28,6 +28,7 @@ Random Addresser is a Chrome extension designed to collect random addresses by s
 6. Open the extension popup by clicking on the extension icon in the Chrome toolbar.
 7. View the list of captured addresses, clear the list, or export the addresses to a CSV file from the popup interface.
 
+For geocoding the captured addresses, you can use the [RandomAddresser-Geocoder](https://github.com/jeffwray/RandomAddresser-Geocoder) tool.
 
 ## License
 (C) 2024 BIGDEALIO, LLC.
