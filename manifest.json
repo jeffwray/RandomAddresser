@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Zillow Address Scraper",
+  "name": "Random Addresser",
   "version": "1.0",
-  "description": "Scrape address data from Zillow search results pages",
+  "description": "This Chrome extension is designed to collect random addresses by sampling homes listed for sale, providing a diverse and representative dataset.",
   "permissions": ["activeTab", "scripting", "storage", "tabs", "downloads"],
   "content_scripts": [
     {

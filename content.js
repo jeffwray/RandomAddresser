@@ -51,8 +51,8 @@ function createButton(text, color, clickHandler) {
 // Function to start capture session
 function startCaptureSession() {
   chrome.storage.local.set({ isCapturing: true, capturedAddresses: [] }, () => {
-    alert('Capture session started. The cards will be made smaller to load more results.');
-    makeCardsSmaller();
+    alert('Capture session started. The cards will be adjusted to load more results.');
+    adjustCardSize();
     setupAutomaticCapture();
     captureResults();
   });
@@ -104,45 +104,62 @@ function captureResults() {
           handleChromeError();
           console.log(`Captured ${newAddresses.length} new unique addresses`);
           if (newAddresses.length > 0) {
-            showCheckmark();
+            showCheckmark(newAddresses.length);
           }
         });
-      }, 5); // Wait for 5 seconds before capturing to allow for more results to load
+      }, 5000); // Wait for 5 seconds before capturing to allow for more results to load
     }
   });
 }
 
-// Function to show checkmark
-function showCheckmark() {
+// Function to show checkmark and number of homes added
+function showCheckmark(numHomes) {
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '50%';
+  container.style.left = '50%';
+  container.style.transform = 'translate(-50%, -50%)';
+  container.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+  container.style.borderRadius = '10px';
+  container.style.padding = '20px';
+  container.style.zIndex = '9999';
+  container.style.opacity = '0';
+  container.style.transition = 'opacity 0.5s ease-in-out';
+  container.style.display = 'flex';
+  container.style.flexDirection = 'column';
+  container.style.alignItems = 'center';
+  container.style.justifyContent = 'center';
+  container.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+
   const checkmark = document.createElement('div');
   checkmark.innerHTML = '✓';
-  checkmark.style.position = 'fixed';
-  checkmark.style.top = '50%';
-  checkmark.style.left = '50%';
-  checkmark.style.transform = 'translate(-50%, -50%)';
-  checkmark.style.fontSize = '100px';
+  checkmark.style.fontSize = '60px';
   checkmark.style.color = 'green';
-  checkmark.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-  checkmark.style.borderRadius = '50%';
-  checkmark.style.padding = '20px';
-  checkmark.style.zIndex = '9999';
-  checkmark.style.opacity = '0';
-  checkmark.style.transition = 'opacity 0.5s ease-in-out';
 
-  document.body.appendChild(checkmark);
+  const homesAdded = document.createElement('div');
+  homesAdded.textContent = `${numHomes} homes added`;
+  homesAdded.style.fontSize = '24px';
+  homesAdded.style.fontWeight = 'bold';
+  homesAdded.style.marginTop = '10px';
+  homesAdded.style.color = '#333';
+
+  container.appendChild(checkmark);
+  container.appendChild(homesAdded);
+
+  document.body.appendChild(container);
 
   // Fade in
   setTimeout(() => {
-    checkmark.style.opacity = '1';
+    container.style.opacity = '1';
   }, 0);
 
   // Fade out and remove
   setTimeout(() => {
-    checkmark.style.opacity = '0';
+    container.style.opacity = '0';
     setTimeout(() => {
-      document.body.removeChild(checkmark);
+      document.body.removeChild(container);
     }, 500);
-  }, 1000);
+  }, 2000);
 }
 
 // Function to handle automatic pagination (now just triggers more loading)
@@ -194,11 +211,11 @@ function setupAutomaticCapture() {
   mutationObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-// Function to make property cards smaller
-function makeCardsSmaller() {
+// Function to adjust card size
+function adjustCardSize() {
   const style = document.createElement('style');
   style.textContent = `
-    /* Target cards by data attributes, common structures, and specific classes */
+    /* Completely destyle the specified elements */
     [data-test="property-card"],
     [data-test="search-page-list-card"],
     .property-card,
@@ -211,37 +228,47 @@ function makeCardsSmaller() {
     .StyledListCardWrapper-srp-8-105-0__sc-wtsrtn-0,
     .gpgmwS,
     .cXzrsE {
-      transform: scale(0.3) !important;
-      margin: -50px !important;
+      all: unset !important;
+      display: block !important;
+      margin: 0 !important;
       padding: 0 !important;
-      max-height: 100px !important;
-      min-height: 100px !important;
-      height: 100px !important;
-      overflow: hidden !important;
-      position: relative !important;
-      z-index: 1 !important;
-      opacity: 0.7 !important;
-      transition: transform 0.3s ease, opacity 0.3s ease !important;
-    }
-    
-    /* Hover effect to show more details */
-    [data-test="property-card"]:hover,
-    [data-test="search-page-list-card"]:hover,
-    .property-card:hover,
-    .list-card:hover,
-    article[role="presentation"]:hover,
-    div[id^="zpid_"]:hover,
-    div[id^="card-"]:hover,
-    div[class*="ListItem-"]:hover,
-    .ListItem-c11n-8-105-0__sc-13rwu5a-0:hover,
-    .StyledListCardWrapper-srp-8-105-0__sc-wtsrtn-0:hover,
-    .gpgmwS:hover,
-    .cXzrsE:hover {
-      transform: scale(0.5) !important;
+      border: none !important;
+      background: none !important;
+      box-shadow: none !important;
+      position: static !important;
+      transform: none !important;
+      transition: none !important;
+      z-index: auto !important;
       opacity: 1 !important;
-      z-index: 2 !important;
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
     }
-    
+
+    /* Hide photo area and related elements */
+    .StyledPropertyCardPhotoWrapper-c11n-8-105-0__sc-1gbptz1-0,
+    .StyledPropertyCardPhotoHeader-c11n-8-105-0__sc-4wdzry-0,
+    .StyledPropertyCardPhotoFooter-c11n-8-105-0__sc-12lm4o3-0,
+    .StyledPropertyCardPhotoBody-c11n-8-105-0__sc-yln73l-0,
+    .StyledPhotoCarousel-c11n-8-105-0__sc-2dw10y-0 {
+      display: none !important;
+    }
+
+    /* Adjust layout for remaining content */
+    .StyledPropertyCardDataWrapper-c11n-8-105-0__sc-hfbvv9-0 {
+      padding: 10px !important;
+      margin-top: 0 !important;
+    }
+
+    /* Remove any unnecessary padding or margins from parent elements */
+    .StyledCard-c11n-8-105-0__sc-1w6p0lv-0,
+    .StyledPropertyCardBody-c11n-8-105-0__sc-1danayh-0,
+    .PropertyCardWrapper__StyledPropertyCardBody-srp-8-105-0__sc-16e8gqd-4 {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
     /* Ensure the container of the cards doesn't have a large height */
     .List-c11n-8-105-0__sc-1smrmqp-0,
     .StyledSearchListWrapper-srp-8-105-0__sc-1ieen0c-0,
@@ -250,9 +277,42 @@ function makeCardsSmaller() {
       min-height: 0 !important;
       height: auto !important;
     }
+
+    /* Override specific styles to remove blank area */
+    .cazKst .StyledPropertyCardBody-c11n-8-105-0__sc-1danayh-0 {
+      display: grid !important;
+      grid-template-areas:
+        "photo"
+        "data"
+        "flex" !important;
+      grid-template-rows: 0px 1fr auto !important;
+      height: 89% !important;
+      padding: 0px !important;
+      -webkit-tap-highlight-color: transparent !important;
+      grid-gap: 0 !important; /* Remove all grid gaps */
+    }
+
+    /* Hide the ad block */
+    .container .wrapper {
+      display: none !important;
+    }
+
+    /* Remove gaps and padding for .dtRiBi */
+    .dtRiBi {
+      display: grid !important;
+      gap: 0 !important;
+      margin-bottom: 0px !important;
+      padding: 0 !important;
+      grid-template-columns: repeat(1, 1fr) !important;
+    }
+
+    /* Set text size in result-list-container to 3px */
+    .result-list-container {
+      font-size: 3px !important;
+    }
   `;
   document.head.appendChild(style);
-  console.log('Cards made smaller');
+  console.log('Cards adjusted and photo area removed');
 }
 
 // Function to check and apply card resizing
@@ -275,7 +335,7 @@ function checkAndResizeCards() {
   const cards = document.querySelectorAll(cardSelectors.join(', '));
   
   if (cards.length > 0) {
-    makeCardsSmaller();
+    adjustCardSize();
   } else {
     console.log('No property cards found. Retrying...');
     setTimeout(checkAndResizeCards, 1000); // Retry after 1 second
